@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
-import { shuffle } from "../Utilities";
+import { difficultyStars, shuffle } from "../Utilities";
+import QuestionAndOption from "./QuestionAndOptions";
 
-const IndivualQuestion = ({ getNextQuestion, currentQuestion ,maxIndexSelected }) => {
+const IndivualQuestion = ({
+  getNextQuestion,
+  currentQuestion,
+  maxIndexSelected,
+}) => {
   const [isCorrect, setIsCorrect] = useState(null);
   const [selectedValue, setSelectedValue] = useState(null);
   const [shuffledOptions, setShuffledOptions] = useState([]);
@@ -14,7 +19,7 @@ const IndivualQuestion = ({ getNextQuestion, currentQuestion ,maxIndexSelected }
     setShuffledOptions(shuffle(Options));
   }, [currentQuestion]);
 
-  const handleOptionChange = (event) => {
+  const compareAnswers = (event) => {
     console.log(event.target.value);
     setSelectedValue(event.target.value);
     if (event.target.value === currentQuestion.correct_answer) {
@@ -35,6 +40,9 @@ const IndivualQuestion = ({ getNextQuestion, currentQuestion ,maxIndexSelected }
   return (
     <div className="container">
       <div className="row">
+        <span className="text-danger">
+          {difficultyStars(currentQuestion.difficulty)}
+        </span>
         <p>{currentQuestion?.category}</p>
       </div>
       <div className="row">
@@ -42,33 +50,27 @@ const IndivualQuestion = ({ getNextQuestion, currentQuestion ,maxIndexSelected }
           <p className="h5">{currentQuestion?.question}</p>
         </div>
       </div>
-      <div className="row">
-        {shuffledOptions.map((item, index) => (
-          <div className="col-md-4 me-5 mt-4" key={index}>
-            <label className={`btn ${selectedValue === item ? "btn-dark" : ""}`}>
-              <input
-                type="radio"
-                name="options"
-                value={item}
-                checked={selectedValue === item}
-                onChange={handleOptionChange}
-              />
-              {item}
-            </label>
-          </div>
-        ))}
-      </div>
+
+      <QuestionAndOption
+        shuffledOptions={shuffledOptions}
+        selectedValue={selectedValue}
+        compareAnswers={compareAnswers}
+      />
 
       <div className="row mt-4">
         {isOptionSelected && isCorrect === true && (
-          <h5 className="">Correct</h5>
+          <h5 className="text-success">Correct</h5>
         )}
         {isOptionSelected && isCorrect === false && (
-          <h5>Sorry. Please try again</h5>
+          <h5 className="text-danger">Sorry. Please try again</h5>
         )}
         {isOptionSelected && (
-          <button disabled={maxIndexSelected} className="btn btn-primary" onClick={handleNextQuestion}>
-           {maxIndexSelected ?"Your test ends" :" Next"}
+          <button
+            disabled={maxIndexSelected}
+            className="btn btn-primary"
+            onClick={handleNextQuestion}
+          >
+            {maxIndexSelected ? "Your test ends" : " Next"}
           </button>
         )}
       </div>

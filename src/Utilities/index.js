@@ -5,3 +5,17 @@ export const shuffle = (mcqOptions) => {
   }
   return mcqOptions;
 };
+
+
+export const difficultyStars = (level) => {
+  switch (level) {
+    case "easy":
+      return "★";
+    case "medium":
+      return "★★";
+    case "hard":
+      return "★★★";
+    default:
+      return "";
+  }
+};
